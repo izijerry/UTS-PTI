@@ -1,5 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+console.log(battleZones)  // ditambahin gavin baris ke 3
 
 canvas.width = 1026
 canvas.height = 576
@@ -9,6 +10,12 @@ const collisionsmap = []
 for (let i = 0; i < collisions.length; i += 70) {
     collisionsmap.push(collisions.slice(i, 70 + i))
 
+}
+
+// gavin lagi:
+const battleZoneMap = []
+for (let i = 0; i < battleZones.length; i += 70) {
+    battleZoneMap.push(battleZones.slice(i, 70 + i))
 }
 
 const boundaries = []
@@ -27,6 +34,8 @@ collisionsmap.forEach((row, i) => {
             }))
     })
 })
+
+const battleZones =[] //gavin
 
 const image = new Image()
 image.src = './img/map.png'
