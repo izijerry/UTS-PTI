@@ -1,6 +1,6 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-console.log(battleZones)  // ditambahin gavin baris ke 3
+console.log(battleZonesData)  // ditambahin gavin baris ke 3
 
 canvas.width = 1026
 canvas.height = 576
@@ -14,8 +14,8 @@ for (let i = 0; i < collisions.length; i += 70) {
 
 // gavin lagi:
 const battleZoneMap = []
-for (let i = 0; i < battleZones.length; i += 70) {
-    battleZoneMap.push(battleZones.slice(i, 70 + i))
+for (let i = 0; i < battleZonesData.length; i += 70) {
+    battleZoneMap.push(battleZonesData.slice(i, 70 + i))
 }
 
 const boundaries = []
@@ -36,6 +36,20 @@ collisionsmap.forEach((row, i) => {
 })
 
 const battleZones =[] //gavin
+// gavin:
+battleZonesMap.forEach((row, i) => {
+    row.forEach((Symbol, j) => {
+        if (Symbol === 1025)
+            bbattleZones.push(new boundary({
+                position: {
+                    x: j * boundary.width + offset.x,
+                    y: i * boundary.height + offset.y
+                }
+            }))
+    })
+})
+
+console.log(battleZones) // gavin
 
 const image = new Image()
 image.src = './img/map.png'
@@ -106,7 +120,7 @@ const keys = {
 
 
 
-const moveables = [background, ...boundaries, foreground]
+const moveables = [background, ...boundaries, foreground, ...battleZones] // nambahin battlezones
 
 function rectangularcollision({ rectangle1, rectangle2 }) {
     return (
@@ -124,8 +138,35 @@ function animate() {
         
         
     })
+    battleZones.forEach(battleZone => {  //gavin
+        battleZone.draw() //gavin
+    })
     player.draw()
     foreground.draw()
+
+    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) { //gavin 
+        //gavin
+        for (let i = 0; i < battleZones.length; i++){
+            const battleZone = battleZones[i] 
+            const overlappingArea = 
+            Math.min(player.position.x + player.width, battleZone.position.x + battleZone.width
+            ) - 
+            Math.max(player.position.x, battleZone.position.x) * 
+             Math.min(
+                player.position.y + player.height, 
+                battleZone.position.y + battleZone.height)
+            if (
+                rectangularcollision({
+                    rectangle1: player,
+                    rectangle2: battleZone
+                }) &&
+                overlappingArea > player.width * player.height / 2
+            ){
+                console.log('battle zone collision')
+                break
+            }
+        }
+    }
 
     
         let moving = true
@@ -150,6 +191,7 @@ function animate() {
                     break
                 }
             }
+            
             if (moving)
             moveables.forEach(moveable => { moveable.position.y += 3 })
         }
