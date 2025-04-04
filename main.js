@@ -339,7 +339,8 @@ const draggle = new Sprite({
         max: 4,
         hold: 30
     },
-    animate:true
+    animate:true,
+    isEnemy: true,
 })
 
 const embyImage = new Image()
@@ -354,7 +355,7 @@ const emby = new Sprite({
         max: 4,
         hold: 30
     },
-    animate:true
+    animate:true,
 })
 
 function animateBattle() {
@@ -364,8 +365,21 @@ function animateBattle() {
     emby.draw()
 }
 
-// animateBattle()
-animate()
+animateBattle()
+//animate()
+
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', () => {
+        emby.attack({ 
+            attack: {
+            name: 'Tackle',
+            damage: 10,
+            type: 'Normal'
+        },
+        recipient: draggle
+     })
+    })
+})
 
 let lastkey = ''
 window.addEventListener('keydown', (e) => {
