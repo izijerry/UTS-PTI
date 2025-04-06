@@ -151,7 +151,6 @@ function animate() {
     let moving = true
     player.animate = false
 
-
     console.log(animationId)
     if (battle.initated) return
 
@@ -195,6 +194,7 @@ function animate() {
                             duration: 0.4,
                             onComplete() {
                                 //activate a new animation loop
+                                initBattle()
                                 animateBattle()
                                 gsap.to('#overlappingDiv', {
                                     opacity: 0,
@@ -238,7 +238,6 @@ function animate() {
 
         if (moving)
             moveables.forEach(moveable => { moveable.position.y += 3 })
-        reduceStatusOnMove()
     }
     else if (keys.a.pressed && lastkey === 'a') {
         player.animate = true
@@ -264,7 +263,6 @@ function animate() {
         }
         if (moving)
             moveables.forEach(moveable => { moveable.position.x += 3 })
-        reduceStatusOnMove()
     }
     else if (keys.s.pressed && lastkey === 's') {
         player.animate = true
@@ -290,7 +288,6 @@ function animate() {
         }
         if (moving)
             moveables.forEach(moveable => { moveable.position.y -= 3 })
-        reduceStatusOnMove()
     }
     else if (keys.d.pressed && lastkey === 'd') {
         player.animate = true
@@ -316,61 +313,11 @@ function animate() {
         }
         if (moving)
             moveables.forEach(moveable => { moveable.position.x -= 3 })
-        reduceStatusOnMove()
     }
 
 }
 // animate()
 
-const battleBackgroundImage = new Image()
-battleBackgroundImage.src = './img/battleBackground.png'
-const battleBackground = new Sprite({
-    position: {
-        x: 0,
-        y: 0
-    },
-    image: battleBackgroundImage
-})
-
-const draggleImage = new Image()
-draggleImage.src = './img/draggleSprite.png'
-const draggle = new Sprite({
-    position: {
-        x: 800,
-        y: 100,
-    },
-    image: draggleImage,
-    frames: {
-        max: 4,
-        hold: 30
-    },
-    animate: true
-})
-
-const embyImage = new Image()
-embyImage.src = './img/embySprite.png'
-const emby = new Sprite({
-    position: {
-        x: 280,
-        y: 325,
-    },
-    image: embyImage,
-    frames: {
-        max: 4,
-        hold: 30
-    },
-    animate: true
-})
-
-function animateBattle() {
-    window.requestAnimationFrame(animateBattle)
-    battleBackground.draw()
-    draggle.draw()
-    emby.draw()
-}
-
-// animateBattle()
-animate()
 
 let lastkey = ''
 window.addEventListener('keydown', (e) => {
@@ -409,84 +356,3 @@ window.addEventListener('keyup', (e) => {
             break
     }
 })
-
-let status = {
-    hunger: 75,
-    energy: 60,
-    hygiene: 90,
-    happiness: 80,
-    money: 50000
-};
-
-function updateBar(name, value, isMoney = false) {
-    const bar = document.getElementById(`${name}-bar`);
-    const text = document.getElementById(`${name}-text`);
-    if (!isMoney) {
-        value = Math.max(0, Math.min(100, value));
-        bar.style.width = value + "%";
-        text.textContent = Math.round(value) + "%";
-    } else {
-        text.textContent = "Rp " + value.toLocaleString("id-ID");
-    }
-}
-
-
-function renderStatus() {
-    updateBar("hunger", status.hunger);
-    updateBar("energy", status.energy);
-    updateBar("hygiene", status.hygiene);
-    updateBar("happiness", status.happiness);
-    updateBar("money", status.money, true);
-}
-
-// Contoh integrasi: setiap jalan, kurangi energy
-function reduceStatusOnMove() {
-    status.energy -= 0.03;
-    status.hunger -= 0.02;
-    status.happiness -= 0.01;
-    renderStatus();
-}
-
-renderStatus();
-
-
-//buat tombol maju di layar
-const controls = {
-    up: document.getElementById('up'),
-    down: document.getElementById('down'),
-    left: document.getElementById('left'),
-    right: document.getElementById('right'),
-  };
-  
-  controls.up.addEventListener('pointerdown', () => {
-    keys.w.pressed = true
-    lastkey = 'w'
-  })
-  controls.up.addEventListener('pointerup', () => {
-    keys.w.pressed = false
-  })
-  
-  controls.down.addEventListener('pointerdown', () => {
-    keys.s.pressed = true
-    lastkey = 's'
-  })
-  controls.down.addEventListener('pointerup', () => {
-    keys.s.pressed = false
-  })
-  
-  controls.left.addEventListener('pointerdown', () => {
-    keys.a.pressed = true
-    lastkey = 'a'
-  })
-  controls.left.addEventListener('pointerup', () => {
-    keys.a.pressed = false
-  })
-  
-  controls.right.addEventListener('pointerdown', () => {
-    keys.d.pressed = true
-    lastkey = 'd'
-  })
-  controls.right.addEventListener('pointerup', () => {
-    keys.d.pressed = false
-  })
-  
