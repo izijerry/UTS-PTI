@@ -135,3 +135,4 @@ document.querySelector('#dialogueBox').addEventListener('click', (e) => {
     } else e.currentTarget.style.display = 'none'
     console.log('clicked dialogue')
 })
+
