@@ -1,7 +1,10 @@
 <head>
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         * {
 
@@ -134,3 +137,45 @@
 <script src="classes.js"></script>
 <script src="main.js"></script>
 <script src="battleScene.js"></script>
+<body>
+    <div id="status-bars">
+        <div class="bar-container">
+            <span class="label">Hunger</span>
+            <div class="bar">
+                <div id="hunger-bar" class="fill"></div>
+            </div>
+            <span id="hunger-text">0%</span>
+        </div>
+        <div class="bar-container">
+            <span class="label">Energy</span>
+            <div class="bar">
+                <div id="energy-bar" class="fill"></div>
+            </div>
+            <span id="energy-text">0%</span>
+        </div>
+        <div class="bar-container">
+            <span class="label">Hygiene</span>
+            <div class="bar">
+                <div id="hygiene-bar" class="fill"></div>
+            </div>
+            <span id="hygiene-text">0%</span>
+        </div>
+        <div class="bar-container">
+            <span class="label">Happiness</span>
+            <div class="bar">
+                <div id="happiness-bar" class="fill"></div>
+            </div>
+            <span id="happiness-text">0%</span>
+        </div>
+        <div class="bar-container">
+            <span class="label">Money</span>
+            <span id="money-text">Rp 0</span>
+        </div>
+    </div>
+
+    <canvas></canvas>
+    <script src="./data/collisions.js"></script>
+    <script src="./data/battleZones.js"></script>
+    <script src="classes.js"></script>
+    <script src="main.js"></script>
+</body>
