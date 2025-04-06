@@ -62,6 +62,7 @@ document.querySelectorAll('button').forEach(button => {
                         })
 
                         battle.initated = false
+                        audio.Map.play()
                     }
                 })
             })  
@@ -95,6 +96,7 @@ document.querySelectorAll('button').forEach(button => {
                             })
 
                             battle.initated = false
+                            audio.Map.play()
                         }
                     })
                 })         
@@ -120,9 +122,9 @@ function animateBattle() {
     })
 }
 
-initBattle()
-animateBattle()
-//animate()
+//initBattle()
+//animateBattle()
+animate()
 
 
 

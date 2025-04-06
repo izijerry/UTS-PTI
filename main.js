@@ -16,7 +16,6 @@ for (let i = 0; i < battleZonesData.length; i += 70) {
     battleZonesMap.push(battleZonesData.slice(i, 70 + i))
 }
 
-console.log(battleZonesMap)
 
 const boundaries = []
 const offset = {
@@ -49,7 +48,7 @@ battleZonesMap.forEach((row, i) => {
     })
 })
 
-console.log(battleZones)
+
 
 
 const image = new Image()
@@ -151,7 +150,7 @@ function animate() {
     let moving = true
     player.animate = false
 
-    console.log(animationId)
+    
     if (battle.initated) return
 
     //activate a battle
@@ -177,10 +176,15 @@ function animate() {
                 overlappingArea > (player.width * player.height) / 2
                 && Math.random() < 0.01
             ) {
-                console.log('activate battle')
+                
 
                 //deactivate current animation loop
                 window.cancelAnimationFrame(animationId)
+
+
+                audio.Map.stop()
+                audio.initBattle.play()
+                audio.battle.play()
 
                 battle.initated = true
                 gsap.to('#overlappingDiv', {
@@ -256,7 +260,7 @@ function animate() {
                     }
                 })
             ) {
-                console.log('colliding')
+                
                 moving = false
                 break
             }
@@ -281,7 +285,7 @@ function animate() {
                     }
                 })
             ) {
-                console.log('colliding')
+                
                 moving = false
                 break
             }
@@ -306,7 +310,7 @@ function animate() {
                     }
                 })
             ) {
-                console.log('colliding')
+                
                 moving = false
                 break
             }
@@ -356,3 +360,12 @@ window.addEventListener('keyup', (e) => {
             break
     }
 })
+
+let clicked = false
+addEventListener('click', () => {
+  if (!clicked) {
+     audio.Map.play()
+     clicked = true
+  }
+})
+
