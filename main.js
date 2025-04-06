@@ -1,6 +1,5 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-
 canvas.width = 1026
 canvas.height = 576
 
@@ -8,7 +7,26 @@ canvas.height = 576
 const collisionsmap = []
 for (let i = 0; i < collisions.length; i += 70) {
     collisionsmap.push(collisions.slice(i, 70 + i))
+}
 
+const colRumahMap= []
+for (let i = 0; i < colRumahData.length; i += 70) {
+    colRumahMap.push(colRumahData.slice(i, 70 + i))
+}
+
+const colLakeMap= []
+for (let i = 0; i < colLakeData.length; i += 70) {
+    colLakeMap.push(colLakeData.slice(i, 70 + i))
+}
+
+const colBarMap= []
+for (let i = 0; i < colBarData.length; i += 70) {
+    colBarMap.push(colBarData.slice(i, 70 + i))
+}
+
+const colGunungMap= []
+for (let i = 0; i < colGunungData.length; i += 70) {
+    colGunungMap.push(colGunungData.slice(i, 70 + i))
 }
 
 const battleZonesMap = []
@@ -34,8 +52,60 @@ collisionsmap.forEach((row, i) => {
     })
 })
 
-const battleZones = []
 
+const colRumah = []
+colRumahMap.forEach((row, i) => {
+    row.forEach((Symbol, j) => {
+        if (Symbol === 1025)
+            colRumah.push(new boundary({
+                position: {
+                    x: j * boundary.width + offset.x,
+                    y: i * boundary.height + offset.y
+                }
+            }))
+    })
+})
+
+const colBar = []
+colBarMap.forEach((row, i) => {
+    row.forEach((Symbol, j) => {
+        if (Symbol === 1025)
+            colBar.push(new boundary({
+                position: {
+                    x: j * boundary.width + offset.x,
+                    y: i * boundary.height + offset.y
+                }
+            }))
+    })
+})
+
+const colLake = []
+colLakeMap.forEach((row, i) => {
+    row.forEach((Symbol, j) => {
+        if (Symbol === 1025)
+            colLake.push(new boundary({
+                position: {
+                    x: j * boundary.width + offset.x,
+                    y: i * boundary.height + offset.y
+                }
+            }))
+    })
+})
+
+const colGunung = []
+colGunungMap.forEach((row, i) => {
+    row.forEach((Symbol, j) => {
+        if (Symbol === 1025)
+            colGunung.push(new boundary({
+                position: {
+                    x: j * boundary.width + offset.x,
+                    y: i * boundary.height + offset.y
+                }
+            }))
+    })
+})
+
+const battleZones = []
 battleZonesMap.forEach((row, i) => {
     row.forEach((Symbol, j) => {
         if (Symbol === 1025)
@@ -53,7 +123,6 @@ battleZonesMap.forEach((row, i) => {
 
 const image = new Image()
 image.src = './img/map.png'
-
 
 const foregroundImage = new Image()
 foregroundImage.src = './img/foreground.png'
@@ -121,7 +190,7 @@ const keys = {
 
 
 
-const moveables = [background, ...boundaries, foreground, ...battleZones]
+const moveables = [background, ...boundaries, foreground, ...battleZones, ...colRumah, ...colBar, ...colGunung, ...colLake]
 
 function rectangularcollision({ rectangle1, rectangle2 }) {
     return (
@@ -143,6 +212,18 @@ function animate() {
     })
     battleZones.forEach(battleZone => {
         battleZone.draw()
+    })
+    colRumah.forEach(colruma => {
+        colruma.draw()
+    })
+    colBar.forEach(colruma => {
+        colruma.draw()
+    })
+    colLake.forEach(colruma => {
+        colruma.draw()
+    })
+    colGunung.forEach(colruma => {
+        colruma.draw()
     })
     player.draw()
     foreground.draw()
@@ -215,6 +296,65 @@ function animate() {
         }
     }
 
+    // masuk rumah
+    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+
+        let location = ''
+
+        for (let i = 0; i < colRumah.length; i++) {
+            const colrumah = colRumah[i]
+            if (
+                rectangularcollision({
+                    rectangle1: player,
+                    rectangle2: colrumah
+                })
+            ) {
+                location = 'Rumah'
+                break
+            }
+        }  
+
+        for (let i = 0; i < colBar.length; i++) {
+            const colbar = colBar[i]
+            if (
+                rectangularcollision({
+                    rectangle1: player,
+                    rectangle2: colbar
+                })
+            ) {
+                location = 'Bar'
+                break
+            }
+        }  
+
+        for (let i = 0; i < colLake.length; i++) {
+            const collake = colLake[i]
+            if (
+                rectangularcollision({
+                    rectangle1: player,
+                    rectangle2: collake
+                })
+            ) {
+                location = 'Lake'
+                break
+            }
+        }
+
+        for (let i = 0; i < colGunung.length; i++) {
+            const colgunung = colGunung[i]
+            if (
+                rectangularcollision({
+                    rectangle1: player,
+                    rectangle2: colgunung
+                })
+            ) {
+                location = 'Gunung'
+                break
+            }
+        }
+
+        document.getElementById('locationName').innerText = location
+    }
 
     if (keys.w.pressed && lastkey === 'w') {
         player.animate = true
@@ -237,8 +377,6 @@ function animate() {
                 break
             }
         }
-
-
 
         if (moving)
             moveables.forEach(moveable => { moveable.position.y += 3 })
