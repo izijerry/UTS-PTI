@@ -8,125 +8,59 @@ const battleBackground = new Sprite({
     image: battleBackgroundImage
 })
 
-let draggle 
-let emby 
-let renderedSprites 
-let battleAnimationId
-let queue = []
+const draggle = new Monster(monsters.Draggle)
+const emby = new Monster(monsters.Emby)
 
-function initBattle(){
-    document.querySelector('#userInterface').style.display = 'block'
-    document.querySelector('#dialoguebox').style.display = 'none'
-    document.querySelector('#enemyHealthBar').style.width = '100%'
-    document.querySelector('#playerHealthBar').style.width = '100%'
-    document.querySelector('#attacksBox').replaceChildren()
-    
-    
-    draggle = new Monster(monsters.Draggle)
-    emby = new Monster(monsters.Emby)
-    renderedSprites = [draggle, emby]
-    queue = []
+const renderedSprites = [draggle, emby]
 
-    emby.attacks.forEach(attack => {
-        const button = document.createElement('button')
-        button.innerHTML = attack.name
-        document.querySelector('#attacksBox').append(button)
-    })
-
-    // our event listener for our buttons (attack)
-document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const selectedAttack = attacks[e.currentTarget.innerHTML]
-        emby.attack({
-            attack: selectedAttack,
-            recipient: draggle,
-            renderedSprites
-        })
-
-        if(draggle.health <= 0){
-            queue.push(() => {
-                draggle.faint()
-            })        
-            
-            queue.push(() => {
-                // fade back to black
-                gsap.to('#overlappingDiv', {
-                    opacity: 1,
-                    onComplete: () =>{
-                        cancelAnimationFrame(battleAnimationId)
-                        animate()
-                        document.querySelector('#userInterface').style.display = 'none'
-
-                        gsap.to('#overlappingDiv', {
-                            opacity: 0
-                        })
-
-                        battle.initated = false
-                    }
-                })
-            })  
-        }
-
-        // draggle or enemy attacs right here
-        const randomAttack = draggle.attacks[Math.floor(Math.random() * draggle.attacks.length)]
-
-        queue.push(() => {
-            draggle.attack({
-                attack: randomAttack,
-                recipient: emby,
-                renderedSprites
-            })
-
-            if(emby.health <= 0){
-                queue.push(() => {
-                    emby.faint()
-                })
-                queue.push(() => {
-                    // fade back to black
-                    gsap.to('#overlappingDiv', {
-                        opacity: 1,
-                        onComplete: () =>{
-                            cancelAnimationFrame(battleAnimationId)
-                            animate()
-                            document.querySelector('#userInterface').style.display = 'none'
-    
-                            gsap.to('#overlappingDiv', {
-                                opacity: 0
-                            })
-
-                            battle.initated = false
-                        }
-                    })
-                })         
-            }
-        })       
-    })
-    button.addEventListener('mouseenter', (e) => {
-        const selectedAttack = attacks[e.currentTarget.innerHTML]
-        document.querySelector('#attackType').innerHTML =  selectedAttack.type
-        document.querySelector('#attackType').style.color =  selectedAttack.color
-    })
+emby.attacks.forEach(attack => {
+     const button = document.createElement('button')
+     button.innerHTML = attack.name
+     document.querySelector('#attacksBox').append(button)
 })
-}
+
 
 function animateBattle() {
-    battleAnimationId = window.requestAnimationFrame(animateBattle)
+    window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
-
-    console.log(battleAnimationId)
 
     renderedSprites.forEach(sprite => {
         sprite.draw()
     })
 }
 
-initBattle()
 animateBattle()
 //animate()
 
+const queue = []
 
+// our event listener for our buttons (attack)
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', (e) => {
+        const selectedAttack = attacks[e.currentTarget.innerHTML]
+        emby.attack({ 
+            attack: selectedAttack,
+            recipient: draggle,
+            renderedSprites
+     })
 
+     queue.push(() => {
+        draggle.attack({ 
+            attack: attacks.Tackle,
+            recipient: emby,
+            renderedSprites
+        })
+     })
 
+     queue.push(() => {
+        draggle.attack({ 
+            attack: attacks.Fireball,
+            recipient: emby,
+            renderedSprites
+        })
+     })
+    })
+})
 
 document.querySelector('#dialogueBox').addEventListener('click', (e) => {
     if (queue.length > 0) {
@@ -134,5 +68,9 @@ document.querySelector('#dialogueBox').addEventListener('click', (e) => {
         queue.shift()
     } else e.currentTarget.style.display = 'none'
     console.log('clicked dialogue')
+<<<<<<< HEAD
 })
 
+=======
+    })
+>>>>>>> parent of 0bbaa00 (transition back to map)
