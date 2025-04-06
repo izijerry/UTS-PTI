@@ -449,3 +449,45 @@ function reduceStatusOnMove() {
 }
 
 renderStatus();
+
+
+//buat tombol maju di layar
+const controls = {
+    up: document.getElementById('up'),
+    down: document.getElementById('down'),
+    left: document.getElementById('left'),
+    right: document.getElementById('right'),
+  };
+  
+  controls.up.addEventListener('pointerdown', () => {
+    keys.w.pressed = true
+    lastkey = 'w'
+  })
+  controls.up.addEventListener('pointerup', () => {
+    keys.w.pressed = false
+  })
+  
+  controls.down.addEventListener('pointerdown', () => {
+    keys.s.pressed = true
+    lastkey = 's'
+  })
+  controls.down.addEventListener('pointerup', () => {
+    keys.s.pressed = false
+  })
+  
+  controls.left.addEventListener('pointerdown', () => {
+    keys.a.pressed = true
+    lastkey = 'a'
+  })
+  controls.left.addEventListener('pointerup', () => {
+    keys.a.pressed = false
+  })
+  
+  controls.right.addEventListener('pointerdown', () => {
+    keys.d.pressed = true
+    lastkey = 'd'
+  })
+  controls.right.addEventListener('pointerup', () => {
+    keys.d.pressed = false
+  })
+  
