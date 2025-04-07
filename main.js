@@ -1,7 +1,17 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-canvas.width = 1026
-canvas.height = 576
+function resizeCanvas() {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight - document.getElementById('status-container').offsetHeight
+}
+
+resizeCanvas()
+
+window.addEventListener('resize', () => {
+    resizeCanvas()
+    // You might need to adjust player position or other elements here
+})
+
 
 
 const collisionsmap = []
@@ -9,22 +19,22 @@ for (let i = 0; i < collisions.length; i += 70) {
     collisionsmap.push(collisions.slice(i, 70 + i))
 }
 
-const colRumahMap= []
+const colRumahMap = []
 for (let i = 0; i < colRumahData.length; i += 70) {
     colRumahMap.push(colRumahData.slice(i, 70 + i))
 }
 
-const colLakeMap= []
+const colLakeMap = []
 for (let i = 0; i < colLakeData.length; i += 70) {
     colLakeMap.push(colLakeData.slice(i, 70 + i))
 }
 
-const colBarMap= []
+const colBarMap = []
 for (let i = 0; i < colBarData.length; i += 70) {
     colBarMap.push(colBarData.slice(i, 70 + i))
 }
 
-const colGunungMap= []
+const colGunungMap = []
 for (let i = 0; i < colGunungData.length; i += 70) {
     colGunungMap.push(colGunungData.slice(i, 70 + i))
 }
@@ -141,8 +151,8 @@ playerrightimage.src = './img/playerRight.png'
 
 const player = new Sprite({
     position: {
-        x: canvas.width / 2 - 400 / 2,
-        y: canvas.height / 2 - 300 / 2
+        x: canvas.width / 2 - 192 / 4,  // Adjusted for sprite size
+        y: canvas.height / 2 - 68 / 2    // Adjusted for sprite size
     },
     image: playerdownimage,
     frames: {
@@ -185,7 +195,8 @@ const keys = {
     },
     d: {
         pressed: false
-    }
+    },
+    shift: { pressed: false } //buat lari
 }
 
 
@@ -194,10 +205,11 @@ const moveables = [background, ...boundaries, foreground, ...battleZones, ...col
 
 function rectangularcollision({ rectangle1, rectangle2 }) {
     return (
-        rectangle1.position.x + rectangle1.width >= rectangle2.position.x &&
-        rectangle1.position.x <= rectangle2.position.x + rectangle2.width &&
-        rectangle1.position.y <= rectangle2.position.y + rectangle2.height &&
-        rectangle1.position.y + rectangle1.height >= rectangle2.position.y)
+        rectangle1.position.x + rectangle1.width > rectangle2.position.x &&
+        rectangle1.position.x < rectangle2.position.x + rectangle2.width &&
+        rectangle1.position.y + rectangle1.height > rectangle2.position.y &&
+        rectangle1.position.y < rectangle2.position.y + rectangle2.height
+    )
 }
 const battle = {
     initated: false
@@ -231,7 +243,11 @@ function animate() {
     let moving = true
     player.animate = false
 
-    
+    // Calculate movement speed based on running
+    const baseSpeed = 3
+    const runSpeed = 6
+    const currentSpeed = keys.shift.pressed ? runSpeed : baseSpeed
+
     if (battle.initated) return
 
     //activate a battle
@@ -257,7 +273,7 @@ function animate() {
                 overlappingArea > (player.width * player.height) / 2
                 && Math.random() < 0.01
             ) {
-                
+
 
                 //deactivate current animation loop
                 window.cancelAnimationFrame(animationId)
@@ -296,65 +312,52 @@ function animate() {
         }
     }
 
-    // masuk rumah
-    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+   // masuk rumah
+if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+    let location = ''
+    let locationFound = false
 
-        let location = ''
-
-        for (let i = 0; i < colRumah.length; i++) {
-            const colrumah = colRumah[i]
-            if (
-                rectangularcollision({
-                    rectangle1: player,
-                    rectangle2: colrumah
-                })
-            ) {
-                location = 'Rumah'
-                break
-            }
-        }  
-
-        for (let i = 0; i < colBar.length; i++) {
-            const colbar = colBar[i]
-            if (
-                rectangularcollision({
-                    rectangle1: player,
-                    rectangle2: colbar
-                })
-            ) {
-                location = 'Bar'
-                break
-            }
-        }  
-
-        for (let i = 0; i < colLake.length; i++) {
-            const collake = colLake[i]
-            if (
-                rectangularcollision({
-                    rectangle1: player,
-                    rectangle2: collake
-                })
-            ) {
-                location = 'Lake'
-                break
+    // Cek collision dengan semua area
+    const checkCollision = (area) => {
+        for (let i = 0; i < area.length; i++) {
+            if (rectangularcollision({
+                rectangle1: player,
+                rectangle2: area[i]
+            })) {
+                return true
             }
         }
-
-        for (let i = 0; i < colGunung.length; i++) {
-            const colgunung = colGunung[i]
-            if (
-                rectangularcollision({
-                    rectangle1: player,
-                    rectangle2: colgunung
-                })
-            ) {
-                location = 'Gunung'
-                break
-            }
-        }
-
-        document.getElementById('locationName').innerText = location
+        return false
     }
+
+    if (checkCollision(colRumah)) {
+        location = 'Rumah'
+        locationFound = true
+    } else if (checkCollision(colBar)) {
+        location = 'Bar'
+        locationFound = true
+    } else if (checkCollision(colLake)) {
+        location = 'Danau'
+        locationFound = true
+    } else if (checkCollision(colGunung)) {
+        location = 'Gunung'
+        locationFound = true
+    }
+
+    const locationElement = document.getElementById('locationName')
+    if (locationFound) {
+        locationElement.textContent = location
+        locationElement.style.display = 'block'
+        
+        // Tambahkan timeout untuk menyembunyikan setelah beberapa detik
+        clearTimeout(window.locationTimeout)
+        window.locationTimeout = setTimeout(() => {
+            locationElement.style.display = 'none'
+        }, 2000)
+    } else {
+        locationElement.style.display = 'none'
+    }
+}
 
     if (keys.w.pressed && lastkey === 'w') {
         player.animate = true
@@ -368,7 +371,7 @@ function animate() {
                     rectangle2: {
                         ...boundary, position: {
                             x: boundary.position.x,
-                            y: boundary.position.y + 3
+                            y: boundary.position.y + currentSpeed // Use currentSpeed
                         }
                     }
                 })
@@ -379,7 +382,8 @@ function animate() {
         }
 
         if (moving)
-            moveables.forEach(moveable => { moveable.position.y += 3 })
+            moveables.forEach(moveable => { moveable.position.y += currentSpeed })
+        reduceStatusOnMove(keys.shift.pressed ? 2 : 1) // Faster depletion when running
     }
     else if (keys.a.pressed && lastkey === 'a') {
         player.animate = true
@@ -392,19 +396,19 @@ function animate() {
                     rectangle1: player,
                     rectangle2: {
                         ...boundary, position: {
-                            x: boundary.position.x + 3,
+                            x: boundary.position.x + currentSpeed, // Use currentSpeed
                             y: boundary.position.y
                         }
                     }
                 })
             ) {
-                
                 moving = false
                 break
             }
         }
         if (moving)
-            moveables.forEach(moveable => { moveable.position.x += 3 })
+            moveables.forEach(moveable => { moveable.position.x += currentSpeed })
+        reduceStatusOnMove(keys.shift.pressed ? 2 : 1)
     }
     else if (keys.s.pressed && lastkey === 's') {
         player.animate = true
@@ -418,18 +422,18 @@ function animate() {
                     rectangle2: {
                         ...boundary, position: {
                             x: boundary.position.x,
-                            y: boundary.position.y - 3
+                            y: boundary.position.y - currentSpeed // Use currentSpeed
                         }
                     }
                 })
             ) {
-                
                 moving = false
                 break
             }
         }
         if (moving)
-            moveables.forEach(moveable => { moveable.position.y -= 3 })
+            moveables.forEach(moveable => { moveable.position.y -= currentSpeed })
+        reduceStatusOnMove(keys.shift.pressed ? 2 : 1)
     }
     else if (keys.d.pressed && lastkey === 'd') {
         player.animate = true
@@ -442,20 +446,21 @@ function animate() {
                     rectangle1: player,
                     rectangle2: {
                         ...boundary, position: {
-                            x: boundary.position.x - 3,
+                            x: boundary.position.x - currentSpeed, // Use currentSpeed
                             y: boundary.position.y
                         }
                     }
                 })
             ) {
-                
                 moving = false
                 break
             }
         }
         if (moving)
-            moveables.forEach(moveable => { moveable.position.x -= 3 })
+            moveables.forEach(moveable => { moveable.position.x -= currentSpeed })
+        reduceStatusOnMove(keys.shift.pressed ? 2 : 1)
     }
+
 
 }
 // animate()
@@ -480,6 +485,9 @@ window.addEventListener('keydown', (e) => {
             keys.d.pressed = true
             lastkey = 'd'
             break
+        case 'Shift': //buat lari
+            keys.shift.pressed = true
+            break
     }
 })
 window.addEventListener('keyup', (e) => {
@@ -496,14 +504,124 @@ window.addEventListener('keyup', (e) => {
         case 'd':
             keys.d.pressed = false
             break
+        case 'Shift': // lari
+            keys.shift.pressed = false
+            break
     }
 })
 
 let clicked = false
 addEventListener('click', () => {
-  if (!clicked) {
-     audio.Map.play()
-     clicked = true
-  }
+    if (!clicked) {
+        audio.Map.play()
+        clicked = true
+    }
 })
 
+
+
+
+
+
+let status = {
+    hunger: 75,
+    energy: 60,
+    hygiene: 90,
+    happiness: 80,
+    money: 50000
+};
+
+function updateBar(name, value, isMoney = false) {
+    const bar = document.getElementById(`${name}-bar`);
+    const text = document.getElementById(`${name}-text`);
+    if (!isMoney) {
+        value = Math.max(0, Math.min(100, value));
+        bar.style.width = value + "%";
+        text.textContent = Math.round(value) + "%";
+    } else {
+        text.textContent = "Rp " + value.toLocaleString("id-ID");
+    }
+}
+
+function renderStatus() {
+    updateBar("hunger", status.hunger);
+    updateBar("energy", status.energy);
+    updateBar("hygiene", status.hygiene);
+    updateBar("happiness", status.happiness);
+    updateBar("money", status.money, true);
+}
+
+
+// Contoh integrasi: setiap jalan, kurangi energy
+function reduceStatusOnMove(multiplier = 1) {
+    status.energy -= 0.03 * multiplier;
+    status.hunger -= 0.02 * multiplier;
+    status.happiness -= 0.01 * multiplier;
+    renderStatus();
+}
+renderStatus();
+
+
+//buat tombol maju di layar
+const controls = {
+    up: document.getElementById('up'),
+    down: document.getElementById('down'),
+    left: document.getElementById('left'),
+    right: document.getElementById('right'),
+};
+
+controls.up.addEventListener('pointerdown', () => {
+    keys.w.pressed = true
+    lastkey = 'w'
+})
+controls.up.addEventListener('pointerup', () => {
+    keys.w.pressed = false
+})
+controls.down.addEventListener('pointerdown', () => {
+    keys.s.pressed = true
+    lastkey = 's'
+})
+controls.down.addEventListener('pointerup', () => {
+    keys.s.pressed = false
+})
+
+controls.left.addEventListener('pointerdown', () => {
+    keys.a.pressed = true
+    lastkey = 'a'
+})
+controls.left.addEventListener('pointerup', () => {
+    keys.a.pressed = false
+})
+
+controls.right.addEventListener('pointerdown', () => {
+    keys.d.pressed = true
+    lastkey = 'd'
+})
+controls.right.addEventListener('pointerup', () => {
+    keys.d.pressed = false
+})
+// Tambahkan di bagian controls
+const runButton = document.getElementById('run');
+
+runButton.addEventListener('pointerdown', () => {
+    keys.shift.pressed = true;
+    runButton.classList.add('active');
+});
+
+runButton.addEventListener('pointerup', () => {
+    keys.shift.pressed = false;
+    runButton.classList.remove('active');
+});
+
+// Untuk touch devices
+runButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    keys.shift.pressed = true;
+    runButton.classList.add('active');
+});
+
+runButton.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    keys.shift.pressed = false;
+    runButton.classList.remove('active');
+});
