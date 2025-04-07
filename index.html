@@ -1,6 +1,4 @@
 <head>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -12,6 +10,22 @@
             font-style: normal;
 
 
+        }
+
+        #messageBox {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 18px;
+            z-index: 10;
+            pointer-events: none;
+            display: none;
         }
 
         body {
@@ -34,82 +48,102 @@
     </style>
 </head>
 
-<body>
-
-
-    <div style="display: inline-block; position: relative;">
-        <div id="overlappingDiv" style="background-color: black; position: absolute ; top: 0; right: 0;
+<div style="display: inline-block; position: relative;">
+    <div id="overlappingDiv" style="background-color: black; position: absolute ; top: 0; right: 0;
     bottom: 0; left: 0; opacity: 0; pointer-events: none; z-index: 10;"></div>
 
-        <!-- loaction name kayak rumah, gunung, bar, dll -->
-        <div id="locationName"
-            style="display: none; position: absolute; top: 10px; left: 10px; font-size: 16px; color: white; background-color: rgba(0,0,0,0.5); padding: 8px; border-radius: 10px; z-index: 100;">
+    <!-- loaction name kayak rumah, gunung, bar, dll -->
+    <div id="locationName"
+        style="position: absolute; top: 80px; left: 10px; background: white; border: 2px solid black; padding: 10px; display: none;">
+    </div>
+
+    <!-- Interaction Menu: tambahkan di sini, sebelum <canvas> -->
+    <div id="interactionMenu" style="
+    position: absolute;
+    top: 120px;
+    left: 10px;
+    display: none;
+    background: white;
+    border: 2px solid black;
+    padding: 8px;
+    z-index: 1000;
+  ">
+    </div>
+
+    <!-- STATUS BARS -->
+    <div id="statusBars" style="display: flex; gap: 20px; padding: 20px; position: relative; z-index: 30;">
+        <!-- Hunger -->
+        <div style="width: 200px;">
+            <div style="font-size: 12px; margin-bottom: 4px;">Hunger</div>
+            <div
+                style="background-color: white; border: 2px solid black; height: 10px; border-radius: 5px; overflow: hidden;">
+                <div id="hungerBar" style="width: 80%; background-color: orange; height: 100%;"></div>
+            </div>
         </div>
 
-        <div id="game-container">
-            <div id="status-container">
-                <div class="status">
-                    <div class="label">Hunger</div>
-                    <div class="bar">
-                        <div id="hunger-bar" class="fill"></div>
-                    </div>
-                    <div id="hunger-text" class="value">0%</div>
-                </div>
-                <div class="status">
-                    <div class="label">Energy</div>
-                    <div class="bar">
-                        <div id="energy-bar" class="fill"></div>
-                    </div>
-                    <div id="energy-text" class="value">0%</div>
-                </div>
-                <div class="status">
-                    <div class="label">Hygiene</div>
-                    <div class="bar">
-                        <div id="hygiene-bar" class="fill"></div>
-                    </div>
-                    <div id="hygiene-text" class="value">0%</div>
-                </div>
-                <div class="status">
-                    <div class="label">Happiness</div>
-                    <div class="bar">
-                        <div id="happiness-bar" class="fill"></div>
-                    </div>
-                    <div id="happiness-text" class="value">0%</div>
-                </div>
-                <div class="status">
-                    <div class="label">Money</div>
-                    <div class="value">Rp</div>
-                    <div id="money-text" class="value">0</div>
-                </div>
+        <!-- Energy -->
+        <div style="width: 200px;">
+            <div style="font-size: 12px; margin-bottom: 4px;">Energy</div>
+            <div
+                style="background-color: white; border: 2px solid black; height: 10px; border-radius: 5px; overflow: hidden;">
+                <div id="energyBar" style="width: 60%; background-color: yellowgreen; height: 100%;"></div>
             </div>
+        </div>
 
-            <div id="joystick" class="joystick">
-                <button id="up" class="dir-btn">↑</button>
-                <div class="horizontal">
-                    <button id="left" class="dir-btn">←</button>
-                    <button id="down" class="dir-btn">↓</button>
-                    <button id="right" class="dir-btn">→</button>
-                </div>
-                <button id="run" class="run-btn">RUN</button> <!-- lari -->
+        <!-- Hygiene -->
+        <div style="width: 200px;">
+            <div style="font-size: 12px; margin-bottom: 4px;">Hygiene</div>
+            <div
+                style="background-color: white; border: 2px solid black; height: 10px; border-radius: 5px; overflow: hidden;">
+                <div id="hygieneBar" style="width: 90%; background-color: deepskyblue; height: 100%;"></div>
             </div>
+        </div>
 
-            <canvas id="gameCanvas" class="w-full h-auto max-w-full"></canvas>
+        <!-- Happiness -->
+        <div style="width: 200px;">
+            <div style="font-size: 12px; margin-bottom: 4px;">Happiness</div>
+            <div
+                style="background-color: white; border: 2px solid black; height: 10px; border-radius: 5px; overflow: hidden;">
+                <div id="happinessBar" style="width: 70%; background-color: hotpink; height: 100%;"></div>
+            </div>
+        </div>
 
-            <div id="userInterface" style="display: none">
-                <!-- represent health bar of draggle (enemy) -->
-                <div style="
+        <!-- Gold -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="font-size: 12px;">Gold:</div>
+            <div id="goldAmount" style="
+            background-color: white;
+            border: 2px solid black;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 40px;
+            text-align: center;
+            ">0</div>
+        </div>
+    </div>
+
+
+    <div id="gameContainer" style="position: relative;">
+        <canvas></canvas>
+        <div id="messageBox">💬 Ini pesan sementara</div>
+    </div>
+
+    <div id="userInterface" style="display: none">
+        <!-- represent health bar of draggle (enemy) -->
+        <div style="
           background-color: white; 
           width: 250px; 
           position: absolute;
-          top: 50px;
+          top: 80px;
           left: 50px;
           border: 4px black solid;
           padding: 12px;
         ">
-                    <h1 style="font-size: 16px">Draggle</h1>
-                    <div style="position: relative;">
-                        <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                        <div id="enemyHealthBar" style="
+            <h1 style="font-size: 16px">Draggle</h1>
+            <div style="position: relative;">
+                <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
+                <div id="enemyHealthBar" style="
             height: 5px; 
             background-color: green; 
             position: absolute; 
@@ -117,23 +151,23 @@
             left: 0;
             right: 0;
             "></div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <!-- represent health bar of emby (us) -->
-                <div style="
+        <!-- represent health bar of emby (us) -->
+        <div style="
           background-color: white; 
           width: 250px; 
           position: absolute;
-          top: 330px;
+          top: 380px;
           right: 50px;
           border: 4px black solid;
           padding: 12px;
         ">
-                    <h1 style="font-size: 16px">Emby</h1>
-                    <div style="position: relative;">
-                        <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
-                        <div id="playerHealthBar" style="
+            <h1 style="font-size: 16px">Emby</h1>
+            <div style="position: relative;">
+                <div style="height: 5px; background-color: #ccc; margin-top: 10px"></div>
+                <div id="playerHealthBar" style="
             height: 5px; 
             background-color: green; 
             position: absolute; 
@@ -141,10 +175,10 @@
             left: 0;
             right: 0;
             "></div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div style="
+        <div style="
         background-color: white; 
         height: 140px; 
         position: absolute; 
@@ -154,7 +188,7 @@
         border-top: 4px black solid; 
         display: flex;
         ">
-                    <div id="dialogueBox" style="
+            <div id="dialogueBox" style="
                 position: absolute; 
                 top: 0; 
                 right: 0; 
@@ -166,42 +200,41 @@
                 cursor: pointer;
             ">
 
-                    </div>
-                    <div id="attacksBox" style="
+            </div>
+            <div id="attacksBox" style="
                 width: 66.66%; 
                 display: grid; 
                 grid-template-columns: repeat(2, 1fr);
                 "></div>
-                    <div
-                        style="display: flex; align-items: center; justify-content: center; width: 33.33%; border-left: 4px black solid;">
-                        <h1 id="attackType" style="font-size: 16px;">Attack Type</h1>
-                    </div>
-                </div>
+            <div
+                style="display: flex; align-items: center; justify-content: center; width: 33.33%; border-left: 4px black solid;">
+                <h1 id="attackType" style="font-size: 16px;">Attack Type</h1>
             </div>
         </div>
+    </div>
+</div>
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"
-            integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
-            integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer">
-            </script>
-        <!-- audio -->
-        <script src="data/audio.js"></script>
-        <!-- lokasi  -->
-        <script src="data/colRumah.js"></script>
-        <script src="data/colLake.js"></script>
-        <script src="data/colBar.js"></script>
-        <script src="data/colGunung.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"
+    integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
+    integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+<!-- audio -->
+<script src="data/audio.js"></script>
+<!-- lokasi  -->
+<script src="data/colRumah.js"></script>
+<script src="data/colLake.js"></script>
+<script src="data/colBar.js"></script>
+<script src="data/colGunung.js"></script>
 
-        <script src="data/battleZones.js"></script>
-        <script src="data/collisions.js"></script>
-        <script src="data/attacks.js"></script>
-        <script src="data/monsters.js"></script>
+<script src="data/battleZones.js"></script>
+<script src="data/collisions.js"></script>
+<script src="data/attacks.js"></script>
+<script src="data/monsters.js"></script>
 
-        <script src="classes.js"></script>
-        <script src="main.js"></script>
-        <script src="battleScene.js"></script>
-</body>
+<script src="classes.js"></script>
+<script src="main.js"></script>
+<script src="battleScene.js"></script>
