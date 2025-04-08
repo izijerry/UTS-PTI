@@ -13,13 +13,25 @@
 
         }
 
-        #gameContainer {
-            display: none;
+
+        #greeting {
+            position: absolute;
+            top: 70px;
+            right: 1px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 0px;
+            font-weight: bold;
+            font-size: 15px;
+            z-index: 10;
+            pointer-events: none;
+            display: block;
         }
 
         #messageBox {
             position: absolute;
-            top: 20px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.7);
@@ -52,6 +64,8 @@
         }
     </style>
 </head>
+
+
 
 
 <div id="menu" style="
@@ -129,6 +143,17 @@
 
 <body>
 
+    <div id="gameClock" style="
+                position: absolute; 
+                top: 20px; 
+                right: 10px; 
+                background: white; 
+                border: 2px solid black; 
+                padding: 10px; 
+                border-radius: 5px; 
+                font-size: 14px;">
+                ⏰ <span id="timeDisplay">00:00</span>
+            </div>
 
     <div style="display: inline-block; position: relative;">
         <div id="overlappingDiv" style="background-color: black; position: absolute ; top: 0; right: 0;
@@ -193,41 +218,32 @@
             </div>
 
             <!-- Gold -->
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; position: relative; z-index: 1000;">
                 <div style="font-size: 12px;">Gold:</div>
                 <div id="goldAmount" style="
-            background-color: white;
-            border: 2px solid black;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 14px;
-            min-width: 40px;
-            text-align: center;
-            ">0</div>
+                    background-color: white;
+                    border: 2px solid black;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    min-width: 40px;
+                    text-align: center;
+                    position: relative;
+                    z-index: 1000;
+                ">0</div>
             </div>
-            <!-- Time -->
-            <div id="timeDisplay" style="font-size: 16px; font-weight: bold;"></div>
+
+            
+
 
         </div>
 
-
-
-            <div id="greeting" style="
-            position: absolute; 
-            top: 90px; 
-            left: 760px; 
-            background: rgba(0, 0, 0, 0.5); 
-            color: white; 
-            padding: 10px; 
-            border-radius: 8px; 
-            font-size: 14px; 
-            z-index: 50;">
-            Selamat datang!
-            </div>
-            <canvas></canvas>
-            <div id="messageBox">💬 Ini pesan sementara</div>
+        <div id="greeting"> 
         </div>
 
+        <canvas></canvas>
+
+        <div id="messageBox">💬 Ini pesan sementara</div>
         <div id="userInterface" style="display: none">
             <!-- represent health bar of draggle (enemy) -->
             <div style="
@@ -311,6 +327,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
 

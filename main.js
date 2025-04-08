@@ -56,7 +56,6 @@ const statusBars = document.getElementById('statusBars');
 
 startGame.addEventListener('click', () => {
     menu.style.display = 'none'; // Sembunyikan menu
-    gameContainer.style.display = 'block'; // Tampilkan game
     statusBars.style.display = 'flex'; // Tampilkan status bar
 });
 // Fungsi untuk menampilkan petunjuk
@@ -692,61 +691,58 @@ addEventListener('click', () => {
     }
 })
 
-let username = ''; // Variable to store username
-let gameTime = { hours: 6, minutes: 0 }; // Start time in the game (06:00)
 
-// Handle Start Game button
-document.getElementById('startGame').addEventListener('click', () => {
-    username = document.getElementById('usernameInput').value.trim();
-    if (!username) {
-        alert('Disarankan untuk memasukan username!');
-        return;
-    }
-    document.getElementById('menu').style.display = 'none';
-    document.getElementById('gameContainer').style.display = 'block';
-    updateGreeting();
-    startGameClock();
-});
+// Initialize game time
+let gameHours = 11;
+let gameMinutes = 50;
 
-// Update time and greeting dynamically with in-game clock
-function startGameClock() {
-    setInterval(() => {
-        gameTime.minutes += 1; // Increment in-game minute
-        if (gameTime.minutes >= 60) {
-            gameTime.minutes = 0;
-            gameTime.hours += 1;
-            if (gameTime.hours >= 24) {
-                gameTime.hours = 0;
-            }
-        }
+// Track the last updated hour to avoid redundant greetings
+let lastGreetingHour = -1;
 
-        // Update time display
-        const timeDisplay = document.getElementById('timeDisplay');
-        const hours = gameTime.hours.toString().padStart(2, '0');
-        const minutes = gameTime.minutes.toString().padStart(2, '0');
-        timeDisplay.textContent = `${hours}:${minutes}`;
-
-        // Update greeting based on in-game time
-        updateGreeting();
-    }, 1000); // Every second in real life = 1 minute in-game
-}
-
-// Display greeting based on in-game time
-function updateGreeting() {
-    const greeting = document.getElementById('greeting');
-    const hours = gameTime.hours;
-    let greetingText;
-
-    if (hours >= 5 && hours < 12) {
-        greetingText = `Selamat pagi, ${username}`;
-    } else if (hours >= 12 && hours < 15) {
-        greetingText = `Selamat siang, ${username}`;
-    } else if (hours >= 15 && hours < 18) {
-        greetingText = `Selamat sore, ${username}`;
+// Update the greeting based on game time
+function getGreetingByTime() {
+    if (gameHours >= 5 && gameHours < 12) {
+        return "Selamat pagi";
+    } else if (gameHours >= 12 && gameHours < 18) {
+        return "Selamat siang";
+    } else if (gameHours >= 18 && gameHours < 21) {
+        return "Selamat sore";
     } else {
-        greetingText = `Selamat malam, ${username}`;
+        return "Selamat malam";
     }
-
-    greeting.textContent = greetingText;
 }
 
+function showGreeting() {
+    const greetingElement = document.getElementById("greeting");
+    const username = document.getElementById("usernameInput").value || "Pemain"; // Default username jika kosong
+    const timeBasedGreeting = getGreetingByTime();
+    greetingElement.textContent = `${timeBasedGreeting}, ${username}!`; // Set sapaan sesuai waktu
+    greetingElement.style.display = "block"; // Tampilkan elemen greeting
+
+
+}
+
+// Update the clock every second
+function updateClock() {
+    gameMinutes += 1; // Increment 1 "minute" in-game per second in real time
+    if (gameMinutes >= 60) {
+        gameMinutes = 0;
+        gameHours += 1;
+        if (gameHours >= 24) {
+            gameHours = 0; // Reset hours after 24
+        }
+    }
+
+    // Format time as HH:MM
+    const formattedTime = `${gameHours.toString().padStart(2, '0')}:${gameMinutes.toString().padStart(2, '0')}`;
+    document.getElementById('timeDisplay').textContent = formattedTime;
+
+    // Update greeting if the hour has changed
+    if (gameHours !== lastGreetingHour) {
+        lastGreetingHour = gameHours; // Update last greeting hour
+        showGreeting(); // Automatically show updated greeting
+    }
+}
+
+// Start the clock
+setInterval(updateClock, 1000);
