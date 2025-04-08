@@ -1,4 +1,5 @@
 const audioMendaki = new Audio('./audio/ambatukam.mp3');
+let playerselect, playerup, playerdown, playerright, playerleft;
 let status = {
     hunger: 100,
     energy: 100,
@@ -7,15 +8,53 @@ let status = {
     gold: 0,
 }
 
+document.getElementById("startGame").addEventListener("click", function () {
+    const carousel = document.getElementById("characterSelection");
+    const activeItem = carousel.querySelector(".carousel-item.active img");
+
+    switch (activeItem.alt) {
+        case "Character 1":
+            playerup = "./img/playerUp.png";
+            playerdown = "./img/playerDown.png";
+            playerleft = "./img/playerLeft.png";
+            playerright = "./img/playerRight.png";
+            playerselect = 'player 1';
+            break;
+        case "Character 2":
+            playerup = "./img/playerUp2.png";
+            playerdown = "./img/playerDown2.png";
+            playerleft = "./img/playerLeft2.png";
+            playerright = "./img/playerRight2.png";
+            playerselect = 'player 2';
+            break;
+        case "Character 3":
+            playerup = "./img/playerUp3.png";
+            playerdown = "./img/playerDown3.png";
+            playerleft = "./img/playerLeft3.png";
+            playerright = "./img/playerRight3.png";
+            playerselect = 'player 3';
+            break;
+        default:
+            console.error("No character selected!");
+            return; // Menghentikan fungsi jika tidak ada karakter yang dipilih
+    }
+    playerdownimage.src = playerdown;
+    playerupimage.src = playerup;
+    playerleftimage.src = playerleft;
+    playerrightimage.src = playerright;
+    // Inisialisasi gambar karakter setelah pemilihan
+    console.log("Selected character:", playerselect);
+});
+
 // menu
 const menu = document.getElementById('menu');
-const startGameButton = document.getElementById('startGame');
+const startGame = document.getElementById('startGame');
 const instructionsButton = document.getElementById('instructions');
 const exitGameButton = document.getElementById('exitGame');
 const gameContainer = document.getElementById('gameContainer');
 const statusBars = document.getElementById('statusBars');
 
-startGameButton.addEventListener('click', () => {
+startGame.addEventListener('click', () => {
     menu.style.display = 'none'; // Sembunyikan menu
     gameContainer.style.display = 'block'; // Tampilkan game
     statusBars.style.display = 'flex'; // Tampilkan status bar
@@ -24,7 +63,6 @@ startGameButton.addEventListener('click', () => {
 instructionsButton.addEventListener('click', () => {
     alert("Petunjuk:\n- Gunakan tombol panah atau WASD keyboard untuk bergerak.\n- Jelajahi lokasi dan tingkatkan statusmu!");
 });
-
 
 // canvas
 const canvas = document.querySelector('canvas')
@@ -62,7 +100,6 @@ for (let i = 0; i < battleZonesData.length; i += 70) {
     battleZonesMap.push(battleZonesData.slice(i, 70 + i))
 }
 
-
 const boundaries = []
 const offset = {
     x: -100,
@@ -79,7 +116,6 @@ collisionsmap.forEach((row, i) => {
             }))
     })
 })
-
 
 const colRumah = []
 colRumahMap.forEach((row, i) => {
@@ -147,25 +183,22 @@ battleZonesMap.forEach((row, i) => {
 })
 
 
-
-
 const image = new Image()
 image.src = './img/map.png'
 
 const foregroundImage = new Image()
 foregroundImage.src = './img/foreground.png'
 
+
+//character
 const playerdownimage = new Image()
+const playerupimage = new Image()
+const playerrightimage = new Image()
+const playerleftimage = new Image()
+
+
 playerdownimage.src = './img/playerDown.png'
 
-const playerupimage = new Image()
-playerupimage.src = './img/playerUp.png'
-
-const playerleftimage = new Image()
-playerleftimage.src = './img/playerLeft.png'
-
-const playerrightimage = new Image()
-playerrightimage.src = './img/playerRight.png'
 
 const player = new Sprite({
     position: {
@@ -231,6 +264,13 @@ const battle = {
     initated: false
 }
 
+let animationId;
+
+
+
+
+
+
 // SHOWMESSAGE UANG TIDAK CUKUP
 function showMessage(text) {
     const box = document.getElementById('messageBox');
@@ -250,7 +290,9 @@ function updateStatusBars() {
     document.getElementById("hygieneBar").style.width = status.hygiene + "%";
     document.getElementById("happinessBar").style.width = status.happiness + "%";
     document.getElementById("goldAmount").innerText = status.gold;
+
 }
+
 
 // KURANGI STATUS SAAT BERGERAK
 function reduceStatusOnMove() {
@@ -261,7 +303,7 @@ function reduceStatusOnMove() {
 }
 
 function animate() {
-    const animationId = window.requestAnimationFrame(animate)
+    const animationId = window.requestAnimationFrame(animate);
     background.draw()
     boundaries.forEach(boundary => {
         boundary.draw()
@@ -413,6 +455,7 @@ function animate() {
                     if (status.gold >= 10) {
                         status.gold -= 10
                         status.happiness = Math.min(100, status.happiness + 20)
+                        status.hunger = Math.min(100, status.hunger + 20)
                         showMessage('🥴 Kamu merasa tipsy! +20 Happiness')
                         updateStatusBars()
                     } else {
@@ -648,3 +691,62 @@ addEventListener('click', () => {
         clicked = true
     }
 })
+
+let username = ''; // Variable to store username
+let gameTime = { hours: 6, minutes: 0 }; // Start time in the game (06:00)
+
+// Handle Start Game button
+document.getElementById('startGame').addEventListener('click', () => {
+    username = document.getElementById('usernameInput').value.trim();
+    if (!username) {
+        alert('Disarankan untuk memasukan username!');
+        return;
+    }
+    document.getElementById('menu').style.display = 'none';
+    document.getElementById('gameContainer').style.display = 'block';
+    updateGreeting();
+    startGameClock();
+});
+
+// Update time and greeting dynamically with in-game clock
+function startGameClock() {
+    setInterval(() => {
+        gameTime.minutes += 1; // Increment in-game minute
+        if (gameTime.minutes >= 60) {
+            gameTime.minutes = 0;
+            gameTime.hours += 1;
+            if (gameTime.hours >= 24) {
+                gameTime.hours = 0;
+            }
+        }
+
+        // Update time display
+        const timeDisplay = document.getElementById('timeDisplay');
+        const hours = gameTime.hours.toString().padStart(2, '0');
+        const minutes = gameTime.minutes.toString().padStart(2, '0');
+        timeDisplay.textContent = `${hours}:${minutes}`;
+
+        // Update greeting based on in-game time
+        updateGreeting();
+    }, 1000); // Every second in real life = 1 minute in-game
+}
+
+// Display greeting based on in-game time
+function updateGreeting() {
+    const greeting = document.getElementById('greeting');
+    const hours = gameTime.hours;
+    let greetingText;
+
+    if (hours >= 5 && hours < 12) {
+        greetingText = `Selamat pagi, ${username}`;
+    } else if (hours >= 12 && hours < 15) {
+        greetingText = `Selamat siang, ${username}`;
+    } else if (hours >= 15 && hours < 18) {
+        greetingText = `Selamat sore, ${username}`;
+    } else {
+        greetingText = `Selamat malam, ${username}`;
+    }
+
+    greeting.textContent = greetingText;
+}
+

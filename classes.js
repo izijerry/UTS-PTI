@@ -20,7 +20,6 @@ class Sprite {
         this.animate = animate
         this.sprites = sprites
         this.opacity = 1
-        
         this.rotation = rotation
         
     }
