@@ -46,9 +46,10 @@ function initBattle() {
 
     // happiness berkurang saat battle
     status.happiness -= 20
+    status.energy -= 20
     if (status.happiness < 0) status.happiness = 0
     updateStatusBars()
-    showMessage('😫 Kamu merasa stres karena harus bertarung! -20 Happiness')
+    showMessage('😫 Kamu merasa lelah dan stres karena harus bertarung! -20 Happiness -20 energy')
 
     draggle = new Monster(monsters.Draggle)
     emby = new Monster(monsters.Emby)

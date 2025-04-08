@@ -7,12 +7,30 @@ let status = {
     gold: 0,
 }
 
+// menu
+const menu = document.getElementById('menu');
+const startGameButton = document.getElementById('startGame');
+const instructionsButton = document.getElementById('instructions');
+const exitGameButton = document.getElementById('exitGame');
+const gameContainer = document.getElementById('gameContainer');
+const statusBars = document.getElementById('statusBars');
+
+startGameButton.addEventListener('click', () => {
+    menu.style.display = 'none'; // Sembunyikan menu
+    gameContainer.style.display = 'block'; // Tampilkan game
+    statusBars.style.display = 'flex'; // Tampilkan status bar
+});
+// Fungsi untuk menampilkan petunjuk
+instructionsButton.addEventListener('click', () => {
+    alert("Petunjuk:\n- Gunakan tombol panah atau WASD keyboard untuk bergerak.\n- Jelajahi lokasi dan tingkatkan statusmu!");
+});
+
+
+// canvas
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 canvas.width = 1026
 canvas.height = 576
-
-
 
 const collisionsmap = []
 for (let i = 0; i < collisions.length; i += 70) {
@@ -609,19 +627,19 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     switch (e.key) {
         case 'w':
-            keys.w.pressed = false
-            break
+            keys.w.pressed = false;
+            break;
         case 'a':
-            keys.a.pressed = false
-            break
+            keys.a.pressed = false;
+            break;
         case 's':
-            keys.s.pressed = false
-            break
+            keys.s.pressed = false;
+            break;
         case 'd':
-            keys.d.pressed = false
-            break
+            keys.d.pressed = false;
+            break;
     }
-})
+});
 
 let clicked = false
 addEventListener('click', () => {
