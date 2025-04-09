@@ -746,3 +746,105 @@ function updateClock() {
 
 // Start the clock
 setInterval(updateClock, 1000);
+
+
+// Arrow key controls - lebih responsif
+const arrowControls = document.getElementById('arrowControls');
+
+// Fungsi yang lebih baik untuk handle arrow press
+function handleArrowPress(direction, event) {
+    event.preventDefault(); // Mencegah behavior default
+    switch(direction) {
+        case 'up':
+            keys.w.pressed = true;
+            lastkey = 'w';
+            player.image = player.sprites.up;
+            player.animate = true;
+            break;
+        case 'left':
+            keys.a.pressed = true;
+            lastkey = 'a';
+            player.image = player.sprites.left;
+            player.animate = true;
+            break;
+        case 'down':
+            keys.s.pressed = true;
+            lastkey = 's';
+            player.image = player.sprites.down;
+            player.animate = true;
+            break;
+        case 'right':
+            keys.d.pressed = true;
+            lastkey = 'd';
+            player.image = player.sprites.right;
+            player.animate = true;
+            break;
+    }
+}
+
+// Fungsi yang lebih baik untuk handle arrow release
+function handleArrowRelease(direction, event) {
+    event.preventDefault();
+    switch(direction) {
+        case 'up':
+            keys.w.pressed = false;
+            break;
+        case 'left':
+            keys.a.pressed = false;
+            break;
+        case 'down':
+            keys.s.pressed = false;
+            break;
+        case 'right':
+            keys.d.pressed = false;
+            break;
+    }
+    // Cek jika tidak ada tombol yang ditekan
+    if (!keys.w.pressed && !keys.a.pressed && !keys.s.pressed && !keys.d.pressed) {
+        player.animate = false;
+        player.frames.val = 0; // Reset animasi ke frame pertama
+    }
+}
+
+// Event listeners yang lebih baik dengan touch support
+function setupArrowControls() {
+    const arrows = {
+        'arrowUp': 'up',
+        'arrowLeft': 'left',
+        'arrowDown': 'down',
+        'arrowRight': 'right'
+    };
+
+    for (const [id, direction] of Object.entries(arrows)) {
+        const element = document.getElementById(id);
+        
+        // Mouse events
+        element.addEventListener('mousedown', (e) => handleArrowPress(direction, e));
+        element.addEventListener('mouseup', (e) => handleArrowRelease(direction, e));
+        element.addEventListener('mouseleave', (e) => {
+            if (keys[direction === 'up' ? 'w' : direction === 'left' ? 'a' : direction === 'down' ? 's' : 'd'].pressed) {
+                handleArrowRelease(direction, e);
+            }
+        });
+
+        // Touch events untuk mobile
+        element.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleArrowPress(direction, e);
+        });
+        element.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleArrowRelease(direction, e);
+        });
+        element.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            handleArrowRelease(direction, e);
+        });
+    }
+}
+
+// Panggil setup saat game dimulai
+document.getElementById("startGame").addEventListener("click", function() {
+    // ... kode yang sudah ada ...
+    setupArrowControls(); // Tambahkan ini
+});

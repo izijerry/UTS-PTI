@@ -19,23 +19,23 @@ const goldDropTable = [
     { gold: 10, chance: 30 },
     { gold: 20, chance: 20 },
     { gold: 50, chance: 9 },
-    { gold: 100, chance: 0.9},
-    { gold: 999, chance: 0.1},
-  ]
+    { gold: 100, chance: 0.9 },
+    { gold: 999, chance: 0.1 },
+]
 
 function getRandomGoldByDropRate() {
     const random = Math.random() * 100
     let cumulative = 0
-  
+
     for (const drop of goldDropTable) {
-      cumulative += drop.chance
-      if (random < cumulative) {
-        return drop.gold
-      }
+        cumulative += drop.chance
+        if (random < cumulative) {
+            return drop.gold
+        }
     }
-  
+
     return 0 // fallback
-  }
+}
 
 function initBattle() {
     document.querySelector('#userInterface').style.display = 'block'
@@ -43,6 +43,9 @@ function initBattle() {
     document.querySelector('#enemyHealthBar').style.width = '100%'
     document.querySelector('#playerHealthBar').style.width = '100%'
     document.querySelector('#attacksBox').replaceChildren()
+
+    // Sembunyikan arrow controls saat battle
+    document.getElementById('arrowControls').style.display = 'none'
 
     // happiness berkurang saat battle
     status.happiness -= 20
@@ -81,11 +84,11 @@ function initBattle() {
                     const reward = getRandomGoldByDropRate()
                     status.gold += reward
                     updateStatusBars()
-                  
+
                     const dialog = document.querySelector('#dialogueBox')
                     dialog.innerText = `You received ${reward} gold!`
                     dialog.style.display = 'block'
-                  })
+                })
 
                 queue.push(() => {
                     // fade back to black
@@ -95,6 +98,8 @@ function initBattle() {
                             cancelAnimationFrame(battleAnimationId)
                             animate()
                             document.querySelector('#userInterface').style.display = 'none'
+                            // Tampilkan kembali arrow controls
+                            document.getElementById('arrowControls').style.display = 'grid'
 
                             gsap.to('#overlappingDiv', {
                                 opacity: 0
