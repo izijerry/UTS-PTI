@@ -63,57 +63,57 @@
             background-color: #ddd;
         }
 
-         /* Arrow Key Controls */
-    #arrowControls {
-        position: fixed;
-        bottom: 20px;
-        left: 180px;
-        transform: translateX(-50%);
-        display: grid;
-        grid-template-areas:
-            ". up ."
-            "left down right";
-        gap: 10px;
-        z-index: 100;
-    }
+        /* Arrow Key Controls */
+        #arrowControls {
+            position: fixed;
+            bottom: 20px;
+            left: 180px;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left down right";
+            gap: 10px;
+            z-index: 100;
+        }
 
-    .arrow-btn {
-        width: 80px;
-        height: 80px;
-        background-color: rgba(255, 255, 255, 0.7);
-        border: 2px solid black;
-        border-radius: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        cursor: pointer;
-        user-select: none;
-    }
+        .arrow-btn {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px solid black;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+        }
 
-    .arrow-btn:hover {
-        background-color: rgba(200, 200, 200, 0.7);
-    }
+        .arrow-btn:hover {
+            background-color: rgba(200, 200, 200, 0.7);
+        }
 
-    .arrow-btn:active {
-        background-color: rgba(150, 150, 150, 0.7);
-    }
+        .arrow-btn:active {
+            background-color: rgba(150, 150, 150, 0.7);
+        }
 
-    #arrowUp {
-        grid-area: up;
-    }
+        #arrowUp {
+            grid-area: up;
+        }
 
-    #arrowLeft {
-        grid-area: left;
-    }
+        #arrowLeft {
+            grid-area: left;
+        }
 
-    #arrowDown {
-        grid-area: down;
-    }
+        #arrowDown {
+            grid-area: down;
+        }
 
-    #arrowRight {
-        grid-area: right;
-    }
+        #arrowRight {
+            grid-area: right;
+        }
     </style>
 </head>
 
@@ -413,5 +413,29 @@
         <div class="arrow-btn" id="arrowLeft">A</div>
         <div class="arrow-btn" id="arrowDown">S</div>
         <div class="arrow-btn" id="arrowRight">D</div>
+    </div>
+
+    <div id="gameOverScreen" style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 100000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+">
+        <img src="img/GameOver.png" alt="Game Over" style="max-width: 40%; height: auto;">
+        <button onclick="location.reload()" style="
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 18px;
+        background: white;
+        border: 2px solid black;
+        cursor: pointer;
+    ">Main Lagi</button>
     </div>
 </body>

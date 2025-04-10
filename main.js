@@ -1,7 +1,7 @@
 const audioMendaki = new Audio('./audio/ambatukam.mp3');
 let playerselect, playerup, playerdown, playerright, playerleft;
 let status = {
-    hunger: 100,
+    hunger: 70,
     energy: 100,
     hygiene: 100,
     happiness: 100,
@@ -289,6 +289,7 @@ function updateStatusBars() {
     document.getElementById("hygieneBar").style.width = status.hygiene + "%";
     document.getElementById("happinessBar").style.width = status.happiness + "%";
     document.getElementById("goldAmount").innerText = status.gold;
+    checkHungerStatus();
 
 }
 
@@ -754,7 +755,7 @@ const arrowControls = document.getElementById('arrowControls');
 // Fungsi yang lebih baik untuk handle arrow press
 function handleArrowPress(direction, event) {
     event.preventDefault(); // Mencegah behavior default
-    switch(direction) {
+    switch (direction) {
         case 'up':
             keys.w.pressed = true;
             lastkey = 'w';
@@ -785,7 +786,7 @@ function handleArrowPress(direction, event) {
 // Fungsi yang lebih baik untuk handle arrow release
 function handleArrowRelease(direction, event) {
     event.preventDefault();
-    switch(direction) {
+    switch (direction) {
         case 'up':
             keys.w.pressed = false;
             break;
@@ -817,7 +818,7 @@ function setupArrowControls() {
 
     for (const [id, direction] of Object.entries(arrows)) {
         const element = document.getElementById(id);
-        
+
         // Mouse events
         element.addEventListener('mousedown', (e) => handleArrowPress(direction, e));
         element.addEventListener('mouseup', (e) => handleArrowRelease(direction, e));
@@ -844,7 +845,24 @@ function setupArrowControls() {
 }
 
 // Panggil setup saat game dimulai
-document.getElementById("startGame").addEventListener("click", function() {
+document.getElementById("startGame").addEventListener("click", function () {
     // ... kode yang sudah ada ...
     setupArrowControls(); // Tambahkan ini
 });
+
+
+function checkHungerStatus() {
+    const hungerValue = parseInt(document.getElementById("hungerBar").style.width)
+
+    if (hungerValue <= 0) {
+        triggerGameOver()
+    }
+}
+
+function triggerGameOver() {
+    document.getElementById('gameOverScreen').style.display = 'flex'
+
+    // Optional: matikan input & interaksi
+    window.removeEventListener('keydown', yourKeydownHandler) // kalau kamu pakai listener keyboard
+    // bisa tambahkan flag seperti `gameRunning = false` untuk hentikan update
+}
