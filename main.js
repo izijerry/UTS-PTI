@@ -289,8 +289,7 @@ function updateStatusBars() {
     document.getElementById("hygieneBar").style.width = status.hygiene + "%";
     document.getElementById("happinessBar").style.width = status.happiness + "%";
     document.getElementById("goldAmount").innerText = status.gold;
-    checkHungerStatus();
-
+    checkAllStatus(); 
 }
 
 
@@ -300,6 +299,7 @@ function reduceStatusOnMove() {
     if (status.energy > 0) status.energy -= 0.02;
     if (status.hygiene > 0) status.hygiene -= 0.01;
     updateStatusBars();
+    checkAllStatus();
 }
 
 function animate() {
@@ -851,11 +851,12 @@ document.getElementById("startGame").addEventListener("click", function () {
 });
 
 
-function checkHungerStatus() {
-    const hungerValue = parseInt(document.getElementById("hungerBar").style.width)
-
-    if (hungerValue <= 0) {
-        triggerGameOver()
+function checkAllStatus() {
+    if (status.hunger <= 0 || 
+        status.energy <= 0 || 
+        status.hygiene <= 0 || 
+        status.happiness <= 0) {
+        triggerGameOver();
     }
 }
 
