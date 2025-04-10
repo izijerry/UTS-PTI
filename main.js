@@ -294,9 +294,9 @@ function updateStatusBars() {
 
 // KURANGI STATUS SAAT BERGERAK
 function reduceStatusOnMove() {
-    if (status.hunger > 0) status.hunger -= 0.01;
-    if (status.energy > 0) status.energy -= 0.02;
-    if (status.hygiene > 0) status.hygiene -= 0.01;
+    if (status.hunger > 0) status.hunger -= 0.009;
+    if (status.energy > 0) status.energy -= 0.015;
+    if (status.hygiene > 0) status.hygiene -= 0.009;
     updateStatusBars();
     checkAllStatus();
 }
@@ -514,7 +514,7 @@ function animate() {
                         status.energy = Math.max(0, status.energy - 20)
                         status.hunger = Math.max(0, status.hunger - 10)
                         status.happiness = Math.min(100, status.happiness + 30)
-                        showMessage('Ambatukammmm!!! +30 Happiness')
+                        showMessage('+30 Happiness')
                         updateStatusBars()
                     } else {
                         showMessage('💸 Uangmu tidak cukup untuk mendaki!')
