@@ -1,4 +1,3 @@
-const audioMendaki = new Audio('./audio/ambatukam.mp3');
 let playerselect, playerup, playerdown, playerright, playerleft;
 let status = {
     hunger: 70,
@@ -511,7 +510,6 @@ function animate() {
                 mendakiBtn.innerText = '🥾 Mendaki (20G)'
                 mendakiBtn.onclick = () => {
                     if (status.gold >= 20) {
-                        audioMendaki.play();
                         status.gold -= 20
                         status.energy = Math.max(0, status.energy - 20)
                         status.hunger = Math.max(0, status.hunger - 10)

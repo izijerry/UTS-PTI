@@ -13,6 +13,28 @@
 
         }
 
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: none;
+            /* Ubah warna ikon ke hitam */
+            background-image: none;
+            /* Hapus gambar default */
+        }
+
+        .carousel-control-prev-icon::after,
+        .carousel-control-next-icon::after {
+            content: '‹';
+            /* Karakter panah kiri */
+            font-size: 2rem;
+            color: black;
+            /* Warna karakter panah */
+        }
+
+        .carousel-control-next-icon::after {
+            content: '›';
+            color: black;
+            /* Karakter panah kanan */
+        }
 
         #greeting {
             position: absolute;
