@@ -703,9 +703,9 @@ let lastGreetingHour = -1;
 function getGreetingByTime() {
     if (gameHours >= 5 && gameHours < 12) {
         return "Selamat pagi";
-    } else if (gameHours >= 12 && gameHours < 18) {
+    } else if (gameHours >= 12 && gameHours < 15) {
         return "Selamat siang";
-    } else if (gameHours >= 18 && gameHours < 21) {
+    } else if (gameHours >= 15 && gameHours < 18) {
         return "Selamat sore";
     } else {
         return "Selamat malam";
