@@ -1,9 +1,9 @@
 let playerselect, playerup, playerdown, playerright, playerleft;
 let status = {
-    hunger: 70,
-    energy: 100,
-    hygiene: 100,
-    happiness: 100,
+    hunger: 50,
+    energy: 50,
+    hygiene: 50,
+    happiness: 50,
     gold: 0,
 }
 
